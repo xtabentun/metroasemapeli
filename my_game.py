@@ -26,15 +26,41 @@ class Player(object):
         self.y += self.y_speed
         gameDisplay.blit(playerImg, (self.x, self.y))
 
+    def left_bound(self):
+        if self.x <= 0:
+            self.x_speed = self.x_speed * -1
+    def right_bound(self):
+        if self.x > display_width - self.width:
+            self.x_speed = self.x_speed * -1
+    def top_bound(self):
+        if self.y <= 0:
+            self.y_speed = self.y_speed * -1
+    def bottom_bound(self):
+        if self.y >= display_height - self.height:
+            self.y_speed = self.y_speed * -1
+
+    def bound(self):
+        self.left_bound()
+        self.right_bound()
+        self.top_bound()
+        self.bottom_bound()
+
+#def paint_player(player):
+    #gameDisplay.blit(playerImg, (player.x, player.y))
+
 def game_loop():
     player = Player(0,0)
     gameDisplay.fill((255,255,255))
-    gameDisplay.blit(playerImg, (player.x, player.y))
+    player.update()
+    #paint_player(player)
+    #gameDisplay.blit(playerImg, (player.x, player.y))
     pygame.display.update()
 
     alive = True
     while alive:
         for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                quit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT:
                     player.x_speed = 2
@@ -50,6 +76,9 @@ def game_loop():
                     player.x_speed = 0
                 if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
                     player.y_speed = 0
+
+        gameDisplay.fill((255,255,255))
+        player.bound()
         player.update()
         pygame.display.update()
         clock.tick(60)
