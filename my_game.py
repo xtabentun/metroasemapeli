@@ -9,7 +9,7 @@ display_height = 600
 gameDisplay = pygame.display.set_mode((display_width, display_height))
 clock = pygame.time.Clock()
 playerImg = pygame.image.load("isompispurdo.png")
-
+ESImg = pygame.image.load("ESpieni.png")
 class Player(object):
     x = 0
     y = 0
@@ -45,11 +45,45 @@ class Player(object):
         self.top_bound()
         self.bottom_bound()
 
+class ESball(object):
+    x = 0
+    y = 0
+    x_speed = 0
+    y_speed = 0
+    width = 90
+    height = 90
+
+    def __init__(self):
+        side = random.randint(1,4)
+
+        if side == 1:
+            self.x = -60
+            self.y = random.randint(0, display_height-self.height)
+            x_speed = 10
+        elif side == 2:
+            self.x = random.randint(0, display_width-self.width)
+            self.y = -60
+            self.y_speed = 10
+        elif side == 3:
+            self.x = display_width + 60
+            self.y = random.randint(0, display_height-self.height)
+            self.x_speed = -10
+        elif side == 4:
+            self.x = random.randint(0, display_width-self.width)
+            self.y = display_height + 60
+            self.y_speed = -10
+
+    def upfate(self):
+        self.x += self.x_speed
+        self.y += self.y_speed
+        gameDisplay.blit(ESImg, (self.x, self.y))
 #def paint_player(player):
     #gameDisplay.blit(playerImg, (player.x, player.y))
 
 def game_loop():
-    player = Player(0,0)
+    player = Player(100,100)
+    ess = []
+    score = 0
     gameDisplay.fill((255,255,255))
     player.update()
     #paint_player(player)
@@ -58,6 +92,7 @@ def game_loop():
 
     alive = True
     while alive:
+        ess.append(ESball())
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 quit()
@@ -80,6 +115,8 @@ def game_loop():
         gameDisplay.fill((255,255,255))
         player.bound()
         player.update()
+        for es in ess:
+            es.update()
         pygame.display.update()
         clock.tick(60)
 
